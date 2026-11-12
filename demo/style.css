@@ -1,0 +1,13 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  /* Плашка демо тёмная всегда: сцена перекрывает фон своей палитрой */
+  background: #1b1b1b;
+  overflow: hidden;
+}
+
+/* Сцену позиционирует Viewport через style.left/top */
+canvas {
+  position: absolute;
+}

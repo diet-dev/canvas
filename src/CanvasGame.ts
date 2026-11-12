@@ -36,7 +36,7 @@ export type CanvasGameOptions = {
  * Обновляет логику и эффекты, перерисовывает сцену по запросу.
  * Пауза останавливает обновление, но сохраняет возможность перерисовки.
  * Эффекты размещаются под сценой или над ней; runEffect() позволяет ждать
- * завершения эффекта. Игра сама добавляет scene.canvasEl в DOM.
+ * завершения эффекта. Приложение добавляет scene.canvasEl в DOM.
  */
 export abstract class CanvasGame<TEvents extends EventMap = Record<never, never>> {
   public readonly scene: Canvas;

@@ -4,7 +4,6 @@ import {callsOf, fakeScene} from "./FakeCanvas.ts";
 import {ConfettiEffect} from "../src/effects/ConfettiEffect.ts";
 import {Ripple} from "../src/effects/Ripple.ts";
 import {TimerEffect} from "../src/effects/TimerEffect.ts";
-import {Text3dEffect} from "../src/effects/Text3dEffect.ts";
 
 describe("Ripple", () => {
   for (const fade of [0, 0.0001]) {
@@ -168,25 +167,5 @@ describe("TimerEffect", () => {
     timer.upd(5000); // x2 → прошло 10с
     timer.draw(scene);
     assert.ok(timer.isDone());
-  });
-});
-
-describe("Text3dEffect", () => {
-  it("рисует по одной 3d-строке на элемент массива", () => {
-    const {scene, ctx} = fakeScene(300, 300, 1);
-    scene.translate(5, 7);
-    const props = {...ctx.props};
-    const transform = ctx.getTransform();
-    const effect: Text3dEffect = new Text3dEffect({
-      text: ["Уровень", "пройден"],
-      maxTime: 5000,
-    });
-    effect.draw(scene);
-
-    // textDepth по умолчанию 2 → 3 заливки на строку, строк две
-    assert.equal(callsOf(ctx, "fillText").length, 6);
-    assert.ok(!effect.isDone());
-    assert.deepEqual(ctx.props, props);
-    assert.deepEqual(ctx.getTransform(), transform);
   });
 });

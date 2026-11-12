@@ -218,49 +218,6 @@ describe("Canvas", () => {
     assert.deepEqual(scene.size(), {w: 320, h: 240});
   });
 
-  it("draw3dText рисует depth+1 заливок", () => {
-    const {scene, ctx} = fakeScene(200, 200, 1);
-    scene.draw3dText({
-      text: "OK",
-      x: 100,
-      y: 100,
-      depth: 3,
-      fontSize: 20,
-      color: "#fff",
-      shadowColor: "#000",
-    });
-
-    assert.equal(callsOf(ctx, "fillText").length, 4);
-  });
-
-  it("draw3dText применяет цвета и тень при рисовании, затем восстанавливает контекст", () => {
-    const {scene, ctx} = fakeScene(200, 200, 2);
-    scene.fillStyle("#123");
-    scene.font(12, "Verdana", "bold");
-    scene.globalAlpha(0.5);
-    scene.shadowBlur(3);
-    scene.translate(5, 7);
-    const props = {...ctx.props};
-    const transform = ctx.getTransform();
-
-    scene.draw3dText({text: "OK", x: 100, y: 100, depth: 2, fontSize: 20, color: "#fff", shadowColor: "#000"});
-
-    assert.equal(ctx.draws.length, 3);
-    for (const draw of ctx.draws) {
-      assert.equal(draw.props.fillStyle, "#fff");
-      assert.equal(draw.props.font, "normal 20px Arial");
-      assert.equal(draw.props.globalAlpha, 0.5);
-      assert.deepEqual(draw.transform, [2, 0, 0, 2, 10, 14]);
-    }
-    const last = ctx.draws.at(-1)!;
-    assert.equal(last.props.shadowColor, "#000");
-    assert.equal(last.props.shadowBlur, 20);
-    assert.equal(last.props.shadowOffsetX, 8);
-    assert.equal(last.props.shadowOffsetY, 8);
-    assert.deepEqual(ctx.props, props);
-    assert.deepEqual(ctx.getTransform(), transform);
-  });
-
   it("drawImage из img-источника пробрасывает всё как есть", () => {
     const {scene, ctx} = fakeScene(100, 100, 2);
     const img = new (globalThis as unknown as {HTMLImageElement: new () => object}).HTMLImageElement();

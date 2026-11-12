@@ -32,18 +32,6 @@ export type CanvasOptions = {
   dpr?: number;
 };
 
-export type Draw3dTextOptions = {
-  text: string;
-  x: number;
-  y: number;
-  /** Глубина 3d-сдвига в пикселях. */
-  depth: number;
-  fontSize: number;
-  fontFamily?: string;
-  color: string;
-  shadowColor: string;
-};
-
 export class Canvas {
   public readonly canvasEl: HTMLCanvasElement;
   public readonly ctx: CanvasRenderingContext2D;
@@ -153,27 +141,6 @@ export class Canvas {
   public textHeight(text: string): number {
     const metrics: TextMetrics = this.ctx.measureText(text);
     return metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-  }
-
-  /** Текст с псевдо-3d: стопка сдвинутых заливок + подсветка тенью. */
-  public draw3dText(options: Draw3dTextOptions): void {
-    const {text, x, y, depth, fontSize, fontFamily, color, shadowColor} = options;
-    this.save();
-    this.fillStyle(color);
-    this.font(fontSize, fontFamily);
-    const dx: number = this.textWidth(text) / 2;
-
-    for (let n: number = 0; n < depth; n++) {
-      this.ctx.fillText(text, x - n - dx, y - n);
-    }
-    this.shadowColor(shadowColor);
-    this.shadowBlur(10);
-    // Смещение тени — device-space, как и её радиус.
-    this.ctx.shadowOffsetX = (depth + 2) * this.dpr;
-    this.ctx.shadowOffsetY = (depth + 2) * this.dpr;
-
-    this.ctx.fillText(text, x - depth - dx, y - depth);
-    this.restore();
   }
 
   // ---------- фигуры ----------

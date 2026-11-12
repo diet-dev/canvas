@@ -18,7 +18,7 @@ import {Canvas, CanvasGame, Viewport} from "@dietdev/canvas";
 
 - **Canvas.** Координаты задаются в CSS-пикселях. Контекст масштабирует геометрию и текст с учётом DPR. Радиус и смещение тени масштабируются отдельно.
 - **CanvasGame.** Обновление через `requestAnimationFrame`, шаг времени не более 100 мс, пауза и перерисовка по запросу. Эффекты могут рисоваться под сценой или над ней.
-- **Animation.** Общий интерфейс эффектов и готовые реализации: конфетти, волна от клика, обратный отсчёт и всплывающий текст.
+- **Animation.** Общий интерфейс эффектов и готовые реализации: конфетти, волна от клика и обратный отсчёт.
 - **InteractiveObject.** Основа для нарисованных элементов с проверкой попадания указателя и состоянием наведения.
 - **Viewport.** Размеры и позиция сцены с учётом окна, ограничений размеров и соотношения сторон.
 
@@ -38,15 +38,7 @@ scene.roundRect(x, y, w, h, r, fill, stroke);
 scene.font(16, "Arial", "bold");
 scene.fillText("привет", 5, 5);
 scene.fillCenterText("по центру", 20);
-scene.draw3dText({
-  text: "Уровень 1",
-  x: 200,
-  y: 100,
-  depth: 2,
-  fontSize: 32,
-  color: "#ffe650",
-  shadowColor: "#000",
-});
+
 scene.width; // логическая ширина, только чтение
 scene.height; // логическая высота, только чтение
 scene.resize(640, 480); // меняет логические размеры, bitmap и масштаб DPR
@@ -156,7 +148,7 @@ const fade = new Fade({color: "#000"});
 
 Для эффекта с результатом задайте второй параметр типа, например `Animation<MyEffectProps, string>`, и используйте `AnimationProps<string>` в типе его параметров. Вызов `finish(value)` проверяет тип значения, а `runEffect()` возвращает `Promise<string | undefined>`. `undefined` возможен, если эффект завершился по базовому таймеру без передачи данных. По умолчанию результат имеет тип `void`, и `runEffect(Ripple, ...)` возвращает `Promise<void>`. Проверка типов через `pnpm typecheck` включает положительные и отрицательные примеры API из `test/types/`.
 
-Готовые: `ConfettiEffect`, `Ripple`, `TimerEffect` (плашка с обратным отсчётом), `Text3dEffect`.
+Готовые: `ConfettiEffect`, `Ripple`, `TimerEffect` (плашка с обратным отсчётом).
 
 ### InteractiveObject
 

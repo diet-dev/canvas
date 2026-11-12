@@ -6,7 +6,6 @@ import {Animation, type AnimationProps} from "../src/Animation.ts";
 import type {ViewportLike} from "../src/CanvasGame.ts";
 import {callsOf, fakeCanvasEl} from "./FakeCanvas.ts";
 import {Viewport, type ViewportChange} from "../src/Viewport.ts";
-import {Text3dEffect} from "../src/effects/Text3dEffect.ts";
 import {Ripple} from "../src/effects/Ripple.ts";
 
 /** Стаб requestAnimationFrame: кадры крутятся только ручным step(). */
@@ -441,6 +440,16 @@ describe("CanvasGame", () => {
     assert.equal(effect.draws, 2);
   });
 
+  class FinalFrameEffect extends Animation {
+    protected maxTime = 32;
+    public constructor(props: AnimationProps) {
+      super(props);
+    }
+    public draw(scene: Canvas): void {
+      scene.fillRect(0, 0, 10, 10);
+    }
+  }
+
   for (const layer of ["before", "after"] as const) {
     for (const paused of [false, true]) {
       it(`последний кадр ${layer}-эффекта очищается${paused ? " на паузе" : ""}, затем перерисовка прекращается`, () => {
@@ -448,19 +457,19 @@ describe("CanvasGame", () => {
         const game = new SpyGame({view: fakeView(), canvas: el});
         raf.step(1000);
         let completed = 0;
-        const effect = new Text3dEffect({text: ["Done"], maxTime: 32, onDone: () => completed++});
+        const effect = new FinalFrameEffect({onDone: () => completed++});
         if (layer === "before") game.addBeforeEffect(effect);
         else game.addAfterEffect(effect);
 
         raf.step(1032);
-        assert.ok(callsOf(ctx, "fillText").length > 0, "последний кадр эффекта нарисован");
+        assert.ok(callsOf(ctx, "fillRect").length > 0, "последний кадр эффекта нарисован");
         assert.equal(completed, 1);
         if (paused) game.pause();
         ctx.calls.length = 0;
 
         raf.step(1064);
         assert.deepEqual(callsOf(ctx, "clearRect"), [[0, 0, 200, 100]]);
-        assert.equal(callsOf(ctx, "fillText").length, 0, "эффект больше не рисуется");
+        assert.equal(callsOf(ctx, "fillRect").length, 0, "эффект больше не рисуется");
         const scenes = game.scenesDrawn;
         raf.step(1096);
         assert.equal(game.scenesDrawn, scenes, "после очистки нет лишних перерисовок");
